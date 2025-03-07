@@ -1,0 +1,86 @@
+
+@use "../../App.scss"; 
+
+.leftBar {
+  flex: 2; 
+  position: sticky; 
+  top: 130px; 
+//   height: calc(100vh - 70px); 
+  height: calc(100vh - 200px);
+  overflow-y: auto; 
+  background-color: var(--bg); 
+  color: var(--textColor); 
+  
+
+  @media (max-width: 480px) {
+    display: none; 
+  }
+
+ 
+  &::-webkit-scrollbar {
+    display: none;
+  }
+
+  .container {
+    padding: 20px;
+  }
+
+  hr {
+    margin: 20px 0px;
+    border: none;
+    height: 0.5px;
+    background-color: var(--border); 
+  }
+
+  .menu {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .menu span {
+    font-size: 22px;
+    font-weight: bold;
+    color: var(--textColorSoft);
+  }
+
+  .user {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .user img {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+
+  .user span {
+    font-size: 22px;
+    color: var(--textColor);
+  }
+
+  .item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer; 
+    transition: background-color 0.2s ease; 
+
+    &:hover {
+      background-color: var(--bgSoft); 
+      border-radius: 5px; 
+    }
+
+    img {
+      width: 30px;
+    }
+
+    span {
+      font-size: 18px;
+      color: var(--textColor);
+    }
+  }
+}

@@ -1,0 +1,85 @@
+
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 20px;
+  background-color: #1877f2;
+  color: white;
+  width: 98%; 
+  height: 70px; 
+  position: fixed; 
+  top: 0;
+  left: 0;
+  z-index: 1000;
+}
+
+.left {
+  display: flex;
+  align-items: center;
+}
+
+.left span {
+  font-size: 25px;
+  font-weight: bold;
+  color: white;
+  margin-right: 20px;
+}
+
+.left svg {
+  font-size: 28px;
+  margin-right: 15px;
+  cursor: pointer;
+}
+
+.search {
+  width: 30rem;
+  display: flex;
+  align-items: center;
+  background-color: white;
+  border-radius: 20px;
+  padding: 5px 10px;
+  margin-left: 130px;
+}
+
+.search input {
+  border: none;
+  outline: none;
+  padding: 5px;
+  font-size: 16px;
+  border-radius: 20px;
+}
+
+.right {
+  display: flex;
+  margin-left: 60px;
+}
+
+.right .MuiSvgIcon-root {
+  margin: 10px; 
+
+}
+
+.right .user {
+  display: flex;
+  align-items: center;
+}
+
+.right .user img {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  margin-left: 40px;
+}
+
+.right .user span {
+  font-size: 16px;
+  margin-left: 50px;
+}
+
+.LoginMenu {
+  display: flex;
+  align-items: center;
+  margin-left: 60px;
+  gap: 20px;
+}
