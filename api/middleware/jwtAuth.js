@@ -40,16 +40,21 @@ export const generateRefreshToken = (user) => {
 
  //VERIFY ACCESS TOKEN
  export const VERIFY_ACCESS_TOKEN = (req, res, next) => {
-    const token = req.cookies.accessToken;
-    if (!token) return res.status(401).json("Not authenticated!");
+    const token = req.headers.authorization
+    ? req.headers.authorization.split(" ")[1]
+    : req.cookies.accessToken;
+
+      if (!token) {
+          return res.status(401).json("Not authenticated!");
+      }
   
-    try {
-      const decoded = jwt.verify(token, JWT_ACCESS_SECRET);
-      req.user = decoded;
-      next(); 
-    } catch (error) {
-      return res.status(403).json("Token is not valid!");
-    }
+      try {
+          const decoded = jwt.verify(token, JWT_ACCESS_SECRET);
+          req.user = decoded;  
+          next();
+      } catch (error) {
+          return res.status(403).json("Token is not valid!");
+      }
   };
   
 

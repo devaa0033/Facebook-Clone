@@ -8,20 +8,20 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import Navbar from './components/navbar/Navbar'
 import LeftBar from './components/leftBar/LeftBar'
 import RightBar from './components/rightBar/RightBar'
+import AddPost from './components/Add_Post/AddPost'
+import Share from './components/share/Share'
 
-
-const queryClient = new QueryClient()
 
 
 const Layout = () => {
   const location = useLocation()
   
-  const noSidebarRoutes = ['/login', '/register']
+  const noSidebarRoutes = ['/login', '/register', '/addPost']
   
   const isNoSidebarRoute = noSidebarRoutes.includes(location.pathname)
 
   return (
-    <QueryClientProvider client={queryClient}>
+
       <div className="layout">
         <Navbar />
         <div style={{ display: "flex" }}>
@@ -32,7 +32,6 @@ const Layout = () => {
           {!isNoSidebarRoute && <RightBar />}
         </div>
       </div>
-    </QueryClientProvider>
   )
 }
 
@@ -54,7 +53,14 @@ const router = createBrowserRouter([
         path: "/login",
         element: <Login /> 
       },
-    
+      {
+        path: "/addPost",
+        element: <AddPost />
+      },
+      {
+        path: "/share",
+        element: < Share />
+      }
     ],
   },
   

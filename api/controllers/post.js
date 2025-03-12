@@ -1,8 +1,12 @@
+import fs from 'fs';
 import {db} from '../db.js';
-import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
 import moment from 'moment/moment.js';
 dotenv.config();
+import cloudinary from 'cloudinary';
+import { upload } from '../middleware/FileMulter.js';
+
+
 
 export const getPosts = (req, res) => {
    // const userId = req.user.id;
@@ -22,31 +26,99 @@ export const getPosts = (req, res) => {
          JOIN users AS u ON u.id = p.userId
  `;
 
-   // db.query(q, [userId, userId], (err, data) => {
-   //  if(err) return res.status(500).json(err);
-   //  return res.status(200).json(data);
-   // });
 
    db.query(q, (err, data) => {
       if (err) return res.status(500).json(err);
-      return res.status(200).json(data);  // Return posts without requiring authentication
+      return res.status(200).json(data);  
     });
 }
 
+
+
+// Setup cloudinary configuration
+cloudinary.config({
+   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+   api_key: process.env.CLOUDINARY_API_KEY,
+   api_secret: process.env.CLOUDINARY_API_SECRET,
+ });
+ 
 export const addPost = (req, res) => {
-   const userId = req.user.id;
+  upload(req, res, (err) => {
+    if (err) {
+      return res.status(500).json(err);
+    }
+    addPostHandler(req, res);
+  });
+};
 
-   const q = "INSERT INTO posts(`desc`, `img`, `userid`, `createdAt`) VALUES (?)";
+export const addPostHandler = (req, res) => {
+  const { desc, userId } = req.body; 
 
-   const values = [
-      req.body.desc,
-      req.body.img,
-      userId,
-      moment(Date.now()).format("YYYY-MM-DD HH:mm:ss")
-   ];
+  if (req.user.id !== parseInt(userId)) {
+    return res.status(403).json("You can only create a post with your own account.");
+  }
 
-   db.query(q, [values], (err, data) => {
-      if(err) return res.status(500).json(err);
-      return res.status(200).json("Post has been created");
-   });
-}
+  if (req.file) {
+    cloudinary.uploader.upload(req.file.path, (result) => {
+      if (result.error) {
+        return res.status(500).json({ error: result.error.message });
+      }
+
+     
+      fs.unlink(req.file.path, (err) => {
+        if (err) {
+          console.error('Error deleting local file:', err);
+        }
+      });
+
+
+      const img = result.secure_url;
+      const q = "INSERT INTO posts(`desc`, `img`, `userid`, `createdAt`) VALUES (?)";
+      const values = [
+        desc,
+        img,
+        userId,
+        moment(Date.now()).format("YYYY-MM-DD HH:mm:ss"),
+      ];
+
+      db.query(q, [values], (err, data) => {
+        if (err) return res.status(500).json(err);
+        return res.status(200).json("Post has been created.");
+      });
+    });
+  } else {
+    return res.status(400).json("No file uploaded.");
+  }
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 

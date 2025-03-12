@@ -8,12 +8,15 @@ import EmailOutlinedIcon from "@mui/icons-material/EmailOutlined";
 import PersonOutlinedIcon from "@mui/icons-material/PersonOutlined";
 import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
 import { Link } from "react-router-dom";
+import { AuthContext } from "../../context/authContext";
+import { useContext } from "react";
 
 const Navbar = () => {
+  const {currentUser, logout} = useContext(AuthContext);
+  const handleLogout = async () => {
+      await logout();
+  }
   return (
-  
-
-    
     <div className="navbar">
       <div className="left">
         <Link to="/" style={{ textDecoration: "none" }}>
@@ -33,22 +36,36 @@ const Navbar = () => {
         <EmailOutlinedIcon />
         <NotificationsOutlinedIcon />
         <div className="user">
-          <img src="https://images.mykhel.com/webp/images/cricket/players/0/7110.jpg" alt="" />
-          <span>Shreyas Iyer</span>
+          {currentUser ? (
+            <>
+              <img src={currentUser.profilePic} alt="" />
+              <span>{currentUser.name}</span>
+            </>
+          ) : (
+            <>
+              <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQE_x6NwUWccs5uiI2OVZdtWRFfDMNbVbhkn6g925096hRD8KP1S5kqEYw4dDp11-EERhw&usqp=CAU" alt="" />
+              <span>Your Name</span>
+            </>
+          ) }
         </div>
       </div>
 
       <div className="LoginMenu">
+     { currentUser ? (
+      <button onClick={handleLogout}>Logout</button>
+     ) : (
+      <>
         <Link to="/login">
             <button>Login</button>
         </Link>
         <Link to="/register">
             <button>register</button>
         </Link>
-        <button>Logout</button>
-      </div>
+      </>
+     )}
+    </div>
 
-      </div>
+</div>
   );
 };
 

@@ -1,4 +1,5 @@
 import "./leftbar.scss";
+import { Link } from "react-router-dom";
 import Friends from "../../assets/1.png";
 import Groups from "../../assets/2.png";
 import Market from "../../assets/3.png";
@@ -13,9 +14,11 @@ import Tutorials from "../../assets/11.png";
 import Courses from "../../assets/12.png";
 import Fund from "../../assets/13.png";
 import { useContext } from "react";
+import { AuthContext } from "../../context/authContext";
 // import { AuthContext } from "../../context/authContext";
 
 const LeftBar = () => {
+  const {currentUser} = useContext(AuthContext);
   return (
     <div className="leftBar">
       <div className="container">
@@ -25,7 +28,11 @@ const LeftBar = () => {
               src={Friends}
               alt=""
             />
-            <span>User Name</span>
+            { currentUser ? (
+              <span>{currentUser.username}</span>
+            ) :
+              <span>User Name</span>
+            }
           </div>
           <div className="item">
             <img src={Friends} alt="" />
@@ -80,8 +87,10 @@ const LeftBar = () => {
             <span>Fundraiser</span>
           </div>
           <div className="item">
-            <img src={Tutorials} alt="" />
-            <span>Tutorials</span>
+          <img src={Tutorials} alt="" />
+            <Link to="/addPost" style={{ textDecoration: "none", color: "inherit",}}>
+                <span>Add New Post</span>
+            </Link>
           </div>
           <div className="item">
             <img src={Courses} alt="" />

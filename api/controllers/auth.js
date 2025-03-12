@@ -64,14 +64,27 @@ export const login = (req, res) => {
         sameSite: 'None',
         secure: false
        });
+       
        res.cookie('refreshToken', refreshToken, {
         httpOnly: true,
         sameSite: 'none',
         secure: false
        });
 
-       const {password, ...others} = data[0];
-       res.status(200).json({others, token: accessToken});
+       /*const {password, ...others} = data[0];
+       res.status(200).json({others, token: accessToken});*/
+
+
+       res.status(200).json({
+        user: {
+            id: data[0].id,
+            username: data[0].username,
+            email: data[0].email,
+            profilePic: data[0].profilePic,
+            name: data[0].name
+        },
+        accessToken,
+    });
    });
 }
 
@@ -79,9 +92,14 @@ export const login = (req, res) => {
 
 
 export const logout = (req, res) => {
+    const token = req.cookies.accessToken || (req.headers.authorization && req.headers.authorization.split(" ")[1]);
+    if (!token) {
+        return res.status(401).json("No token provided");
+    }
     res.clearCookie('accessToken', {
-        sameSite: 'none',
-        secure: true
+        httpOnly: true,
+        sameSite: 'None',
+        secure: false
     });
     res.status(200).json("User has been logged out!");
 }
@@ -95,3 +113,16 @@ export const logout = (req, res) => {
     "password" : "priya456",
     "name" : "Priya"
 }*/
+
+/**
+AnanyaKumar
+ananya505
+
+
+VikramMehta
+vikram404
+
+
+test1
+12345678
+ */
