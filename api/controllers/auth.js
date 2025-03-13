@@ -81,8 +81,7 @@ export const login = (req, res) => {
             username: data[0].username,
             email: data[0].email,
             profilePic: data[0].profilePic,
-            name: data[0].name,
-            joinDate : data[0].joinDate
+            name: data[0].name
         },
         accessToken,
     });

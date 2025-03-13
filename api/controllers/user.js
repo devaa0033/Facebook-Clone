@@ -28,24 +28,32 @@ export const getUserPosts = (req, res) => {
 }
 
 export const updateUser = (req, res) => {
-    const userId = req.params.userId;
-    const {username, name, profilePic, coverPic, Bio, city, website } = req.body;
+    const userId = req.params.id;
+    const { username, name, profilePic, coverPic, Bio, city, website } = req.body;
 
-    const q = "UPDATE users SET `username` = ?,`name`= ? , `profilePic` = ?, `coverPic`= ?, `Bio` = ?, `city` = ?, `website` = ? WHERE id = ?";
+    if (!username || !name) {
+        return res.status(400).json({ message: "Username and name are required." });
+    }
+
+    const q = "UPDATE users SET `username` = ?, `name`= ?, `profilePic` = ?, `coverPic`= ?, `Bio` = ?, `city` = ?, `website` = ? WHERE id = ?";
 
     const values = [
-        username,
-        name,
-        profilePic,
-        coverPic,
-        Bio,
-        city,
-        website,
+        username || "", // Prevent NULL errors
+        name || "",
+        profilePic || "",
+        coverPic || "",
+        Bio || "",
+        city || "",
+        website || "",
         userId
-    ]
+    ];
 
     db.query(q, values, (err, data) => {
-        if(err) return res.status(500).json(err);
-        return res.status(200).json("User has been updated.");
-    })
-}
+        if (err) {
+            console.error("Database Update Error:", err);  // Log the error
+            return res.status(500).json(err);
+        }
+        return res.status(200).json({ message: "User has been updated.", data });
+    });
+};
+
