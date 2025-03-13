@@ -1,0 +1,125 @@
+.Edit-Profile-container {
+    font-family: Arial, sans-serif;
+    // background-color: #f4f4f4;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    // height: 100vh;
+    margin: 0;
+}
+
+.Edit-container{
+    display: flex;
+    background: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+}
+
+.profile-card {
+    text-align: center;
+    padding: 20px;
+    border-right: 1px solid #ddd;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.profile-card .username {
+    margin-top: 1px;
+    margin-bottom: 20px;
+}
+
+.profile-pic {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    margin-bottom: 10px;
+    display: block;
+    object-fit: cover;
+}
+
+.upload-btn {
+    background: rgb(227, 127, 20);
+    color: #fff;
+    border: none;
+    padding: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+.member-since {
+    font-size: 12px;
+    color: gray;
+    margin-top: 20px;
+}
+
+.edit-profile {
+    padding: 20px;
+    width: 70%;
+}
+.edit-profile h2 {
+    font-size: 24px;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 20px;
+    text-align: center;
+}
+.form-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 30px;
+}
+
+.Bio-row label {
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+.input-group {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 15px;
+}
+.input-group label {
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+.input-group input {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+.update-btn {
+    background: rgb(227, 127, 20);
+    color: white;
+    padding: 10px;
+    border: none;
+    width: 100%;
+    cursor: pointer;
+    border-radius: 5px;
+    margin-top: 10px;
+}
+@media (max-width: 768px) {
+    .container {
+        flex-direction: column;
+        align-items: center;
+    }
+    .profile-card {
+        width: 100%;
+        border-right: none;
+        border-bottom: 1px solid #ddd;
+    }
+    .edit-profile {
+        width: 100%;
+    }
+    .form-row {
+        flex-direction: column;
+    }
+}
+
+
+
+

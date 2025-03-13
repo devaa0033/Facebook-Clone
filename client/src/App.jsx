@@ -1,22 +1,24 @@
 import { useState } from 'react'
 import { createBrowserRouter, RouterProvider, Route, Outlet, useLocation } from 'react-router-dom'
 import './App.scss'
-import Register from './pages/register/Register'
-import Home from './pages/home/Home'
-import Login from './pages/login/Login'
+import Register from './pages/register/Register.jsx'
+import Home from './pages/home/Home.jsx'
+import Login from './pages/login/Login.jsx'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import Navbar from './components/navbar/Navbar'
-import LeftBar from './components/leftBar/LeftBar'
-import RightBar from './components/rightBar/RightBar'
-import AddPost from './components/Add_Post/AddPost'
-import Share from './components/share/Share'
+import Navbar from './components/navbar/Navbar.jsx'
+import LeftBar from './components/leftBar/LeftBar.jsx'
+import RightBar from './components/rightBar/RightBar.jsx'
+import AddPost from './components/Add_Post/AddPost.jsx'
+import Profile from './pages/profile/Profile.jsx'
+import Edit_Profile from './components/update/Edit_Profile.jsx'
+
 
 
 
 const Layout = () => {
   const location = useLocation()
   
-  const noSidebarRoutes = ['/login', '/register', '/addPost']
+  const noSidebarRoutes = ['/login', '/register', '/addPost', '/profile', '/edit_profile']
   
   const isNoSidebarRoute = noSidebarRoutes.includes(location.pathname)
 
@@ -58,8 +60,12 @@ const router = createBrowserRouter([
         element: <AddPost />
       },
       {
-        path: "/share",
-        element: < Share />
+        path: "/profile",
+        element: <Profile/>
+      },
+      {
+        path: "/edit_profile",
+        element: <Edit_Profile/>
       }
     ],
   },
