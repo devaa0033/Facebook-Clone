@@ -40,7 +40,9 @@ const Navbar = () => {
         <div className="user">
           {currentUser ? (
             <>
-              <img src={currentUser.profilePic} alt="" />
+            <Link to="/profile">
+            <img src={currentUser.profilePic} alt="" />
+            </Link>
               <span>{currentUser.name}</span>
             </>
           ) : (

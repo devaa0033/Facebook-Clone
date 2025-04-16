@@ -60,7 +60,7 @@ export default function Edit_Profile() {
         formData.append("city", user.city);
         formData.append("website", user.website);
         if (profileImage) {
-            formData.append("profilePic", profileImage); // Append image
+            formData.append("img", profileImage); // Append image
         }
 
         try {
@@ -87,8 +87,8 @@ export default function Edit_Profile() {
             <h2>{user.name}</h2>
             <p className="username">@{user.username}</p>
             <img src={user.profilePic} alt="" className='profile-pic' />
-            <input type="file" accept="image/*" onChange={handleFileChange} />
-            <button className="upload-btn">Upload New Photo</button>
+            <input type="file" name="img" accept="image/*" onChange={handleFileChange} />
+            {/* <button className="upload-btn">Upload New Photo</button> */}
             <p className="member-since">Member Since : {user.joinYear || "0000"}</p>
         </div>
         

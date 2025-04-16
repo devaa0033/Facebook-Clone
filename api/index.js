@@ -17,9 +17,11 @@ import commentRoutes from './routes/comments.js';
 
 //middlewares
 app.use((req, res, next) => {
-  res.header('Access-Control-Allow-Origin', true);
+  res.header('Access-Control-Allow-Origin', 'http://localhost:5173');
   next();
 })
+
+
 app.use(express.json());
 app.use(cookieParser());
 
@@ -30,6 +32,8 @@ app.use(cors({
   allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true
 }));
+
+app.use('/uploads', express.static('uploads'));
 
 
 app.use('/api/users', userRoutes);
