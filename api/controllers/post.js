@@ -92,6 +92,20 @@ export const addPostHandler = (req, res) => {
 
 
 
+export const getUserPost = (req, res) => {
+  const userId = req.params.userId;
+
+  const q = `SELECT p.*, u.id AS userId, name, profilePic 
+  FROM posts AS p 
+  JOIN users AS u ON u.id = p.userId
+  WHERE p.userId = ?
+  ORDER BY p.createdAt DESC`;
+
+  db.query(q, [userId], (err, data) => {
+    if (err) return res.status(500).json(err);
+    return res.status(200).json(data);
+  });
+}
 
 
 

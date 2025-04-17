@@ -11,6 +11,7 @@ import RightBar from './components/rightBar/RightBar.jsx'
 import AddPost from './components/Add_Post/AddPost.jsx'
 import Profile from './pages/profile/Profile.jsx'
 import Edit_Profile from './components/update/Edit_Profile.jsx'
+import Post from './components/post/Post.jsx'
 
 
 
@@ -18,7 +19,7 @@ import Edit_Profile from './components/update/Edit_Profile.jsx'
 const Layout = () => {
   const location = useLocation()
   
-  const noSidebarRoutes = ['/login', '/register', '/addPost', '/profile', '/edit_profile']
+  const noSidebarRoutes = ['/login', '/register', '/addPost', '/profile', '/edit_profile', '/profile/post/:id']
   
   const isNoSidebarRoute = noSidebarRoutes.includes(location.pathname)
 
@@ -66,6 +67,10 @@ const router = createBrowserRouter([
       {
         path: "/edit_profile",
         element: <Edit_Profile/>
+      },
+      {
+        path: "/profile/post/:id",
+        element: <Post/>
       }
     ],
   },
