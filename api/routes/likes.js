@@ -5,7 +5,7 @@ const router = express.Router();
 
 // router.post("/addLike",VERIFY_ACCESS_TOKEN, likePost);
 
-router.put("/:postId/like",VERIFY_ACCESS_TOKEN, likeController);
+router.post("/:postId/like",VERIFY_ACCESS_TOKEN, likeController);
 
 
 export default router
