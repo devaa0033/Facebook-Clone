@@ -93,19 +93,32 @@ export const addPostHandler = (req, res) => {
 
 
 export const getUserPost = (req, res) => {
-  const userId = req.params.userId;
+  const username = req.params.username;
 
-  const q = `SELECT p.*, u.id AS userId, name, profilePic 
-  FROM posts AS p 
-  JOIN users AS u ON u.id = p.userId
-  WHERE p.userId = ?
-  ORDER BY p.createdAt DESC`;
+  // First, find the user's ID from the username
+  const userQuery = `SELECT id FROM users WHERE username = ?`;
 
-  db.query(q, [userId], (err, data) => {
+  db.query(userQuery, [username], (err, userResult) => {
     if (err) return res.status(500).json(err);
-    return res.status(200).json(data);
+    if (userResult.length === 0) return res.status(404).json({ message: "User not found" });
+
+    const userId = userResult[0].id;
+
+    const postQuery = `
+      SELECT p.*, u.id AS userId, u.name, u.profilePic
+      FROM posts AS p
+      JOIN users AS u ON u.id = p.userid
+      WHERE p.userid = ?
+      ORDER BY p.createdAt DESC
+    `;
+
+    db.query(postQuery, [userId], (err, postData) => {
+      if (err) return res.status(500).json(err);
+      return res.status(200).json(postData);
+    });
   });
-}
+};
+
 
 
 
