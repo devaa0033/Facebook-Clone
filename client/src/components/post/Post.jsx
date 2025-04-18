@@ -1,47 +1,26 @@
 import React from 'react'
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom'
+import './post.scss';
 
-export default function Post() {
+export default function Post({posts}) {
+  const navigate = useNavigate();
+
+  const handleClick = (post) => {
+    navigate(`/post/${post.name}`, { state: { post}});
+  }
   return (
-    <div className="post">
-      <div className="container">
-        <div className="user">
-          <div className="userInfo">
-            <img src="" alt="" />
+      <div className="Userpost">
+        <div className="post-container">
 
-            <div className="details">
-              <Link>
-                  <span className='name'></span>
-              </Link>
-                
-                <span className='date'></span>
-            </div>
-          </div>
+            {posts.length === 0 ? (
+              <p>No posts yet.</p>
+            ) : (
+              posts.map((post, idx) => (
+              <img key={idx} src={post.img} alt="" onClick={() => handleClick(post)} />
+              ))
+            )}
         </div>
-
-
-        <div className="content">
-          <p></p>
-          <img src="" alt="" />
-        </div>
-
-        <div className="info">
-          <div className="item">
-
-          </div>
-
-          <div className="item">
-            see Comments
-          </div>
-
-          <div className="item">
-            Share
-          </div>
-        </div>
-
-
       </div>
-    </div>
   );
 };
 
