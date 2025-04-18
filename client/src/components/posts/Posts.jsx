@@ -13,7 +13,7 @@ const Posts = ({ post }) => {
 
   const handleLike = async () => {
     try {
-      const res= await makeRequest.put(`/api/likes/${post.id}/like`, {}, {
+      const res= await makeRequest.post(`/api/likes/${post.id}/like`, {}, {
         headers: {
           Authorization: "Bearer " + localStorage.getItem("accessToken")
         },
