@@ -34,12 +34,10 @@ export const likeController = async (req, res) => {
   const userId = req.user.id; 
   const postId = req.params.postId;
 
-  console.log("userId:", userId);
-  console.log("postId:", postId);
-
   const checkLikeQuery = "SELECT * FROM likes WHERE userId = ? AND postId = ?";
   const insertLikeQuery = "INSERT INTO likes (userId, postId) VALUES (?, ?)";
   const deleteLikeQuery = "DELETE FROM likes WHERE userId = ? AND postId = ?";
+  const likeCountQuery = "SELECT COUNT(*) AS likeCount FROM likes WHERE postId = ?";
 
   db.query(checkLikeQuery, [userId, postId], (err, result) => {
     if (err) return res.status(500).json(err);
@@ -48,15 +46,46 @@ export const likeController = async (req, res) => {
       // Unliked
       db.query(deleteLikeQuery, [userId, postId], (err, data) => {
         if (err) return res.status(500).json(err);
-        return res.status(200).json("Post unliked");
+
+        // Fetch like count after unliking
+        db.query(likeCountQuery, [postId], (err, likeResult) => {
+          if (err) return res.status(500).json(err);
+          return res.status(200).json({
+            message: "Post unliked",
+            likeCount: likeResult[0].likeCount
+          });
+        });
       });
     } 
     else {
-      // liked
+      // Liked
       db.query(insertLikeQuery, [userId, postId], (err, data) => {
         if (err) return res.status(500).json(err);
-        return res.status(200).json("Post liked");
+
+        // Fetch like count after liking
+        db.query(likeCountQuery, [postId], (err, likeResult) => {
+          if (err) return res.status(500).json(err);
+          return res.status(200).json({
+            message: "Post liked",
+            likeCount: likeResult[0].likeCount
+          });
+        });
       });
     }
   });
-}
+};
+
+
+
+// export const getLikeCount = (req, res) => {
+//   const postId = req.params.postId;
+
+//   const query = "SELECT COUNT(*) AS likeCount FROM likes WHERE postId = ?";
+
+//   db.query(query, [postId], (err, result) => {
+//     if (err) return res.status(500).json(err);
+
+//     const likeCount = result[0].likeCount;
+//     return res.status(200).json({ postId, likeCount });
+//   });
+// };
