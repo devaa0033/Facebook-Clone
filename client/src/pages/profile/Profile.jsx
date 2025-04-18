@@ -4,6 +4,7 @@ import './profile.scss'
 import { LocationOn, CalendarToday, Link } from '@mui/icons-material';
 import { AuthContext } from '../../context/authContext';
 import Edit_Profile from '../../components/update/Edit_Profile';
+import Post from '../../components/post/Post';
 
 
 function Profile() {
@@ -14,6 +15,7 @@ function Profile() {
   const [selectedCoverImage, setSelectedCoverImage] = useState(null);
   const [isCoverModalOpen, setIsCoverModalOpen] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
+  const [activeTab, setActiveTab] = useState('post');
 
   useEffect(() => {
     const fetchProfileData = async () => {
@@ -24,14 +26,24 @@ function Profile() {
           return;
         }
 
-
+        // fetch profile data
          const profileResponse = await axios.get(`http://localhost:8800/api/users/profile/${currentUser.id}`, {
           headers: {
             'Authorization': `Bearer ${token}`,
           }
         });
-
         setProfileData(profileResponse.data);
+
+
+        // Fetch posts for the user
+        const postResponse = await axios.get(`http://localhost:8800/api/posts/profile/${currentUser.username}`, {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+          }
+        });
+        setPosts(postResponse.data);
+
+
       } catch (error) {
         console.log('Error fetching profile data : ', error);
       }
@@ -184,7 +196,7 @@ function Profile() {
 
       <div className="activity-section">
         <div className="activity">
-          <div className="activity-post">
+          <div className="activity-post" onClick={() => setActiveTab('post')}>
             <h3>POST</h3>
           </div>
           <div className="activity-about">
@@ -205,6 +217,13 @@ function Profile() {
           </div>
         </div>
       </div>
+
+
+       {/* Tab Content */}
+      <div className="tab-content">
+          {activeTab === 'post' && <Post posts={posts}/>}
+      </div>
+
     </div>
   );
 }
