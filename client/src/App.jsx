@@ -1,17 +1,15 @@
-import { useState } from 'react'
 import { createBrowserRouter, RouterProvider, Route, Outlet, useLocation } from 'react-router-dom'
 import './App.scss'
 import Register from './pages/register/Register.jsx'
 import Home from './pages/home/Home.jsx'
 import Login from './pages/login/Login.jsx'
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import Navbar from './components/navbar/Navbar.jsx'
 import LeftBar from './components/leftBar/LeftBar.jsx'
 import RightBar from './components/rightBar/RightBar.jsx'
 import AddPost from './components/Add_Post/AddPost.jsx'
 import Profile from './pages/profile/Profile.jsx'
 import Edit_Profile from './components/update/Edit_Profile.jsx'
-import Post from './components/post/Post.jsx'
+import UserPost from './components/UserPost/UserPost.jsx'
 
 
 
@@ -19,14 +17,15 @@ import Post from './components/post/Post.jsx'
 const Layout = () => {
   const location = useLocation()
   
-  const noSidebarRoutes = ['/login', '/register', '/addPost', '/profile', '/edit_profile', '/profile/post/:id']
+  const noSidebarRoutes = ['/login', '/register', '/addPost', '/profile', '/edit_profile','/post/']
   
-  const isNoSidebarRoute = noSidebarRoutes.includes(location.pathname)
+  const isNoSidebarRoute = noSidebarRoutes.some(path => location.pathname.startsWith(path));
+  const isNoNavbarRoute = location.pathname.startsWith('/post/');
 
   return (
 
       <div className="layout">
-        <Navbar />
+         {!isNoNavbarRoute && <Navbar />}
         <div style={{ display: "flex" }}>
           {!isNoSidebarRoute && <LeftBar />}
           <div style={{ flex: 8 }}>
@@ -69,8 +68,8 @@ const router = createBrowserRouter([
         element: <Edit_Profile/>
       },
       {
-        path: "/profile/post/:id",
-        element: <Post/>
+        path: "/post/:username",
+        element: <UserPost/>
       }
     ],
   },
