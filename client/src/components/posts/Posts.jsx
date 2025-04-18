@@ -3,15 +3,33 @@ import { ThumbUpOutlined as LikeIcon } from "@mui/icons-material";
 import { CommentOutlined as CommentIcon } from "@mui/icons-material";
 import { ShareOutlined as ShareIcon } from "@mui/icons-material";
 import './posts.scss';
+import { makeRequest } from "../../axios";
 
 const Posts = ({ post }) => {
   const [isCommenting, setIsCommenting] = useState(false);  
-  const [likes, setLikes] = useState(post?.likes || 0); // Safe check with optional chaining
+  const [likes, setLikes] = useState(post?.likes || 0);
+  const [isLiked, setIsLiked] = useState(post?.isLiked || false);
   const [newComment, setNewComment] = useState(""); 
 
-  const handleLike = () => {
-    setLikes(likes + 1); 
-  };
+  const handleLike = async () => {
+    try {
+      const res= await makeRequest.put(`/api/likes/${post.id}/like`, {}, {
+        headers: {
+          Authorization: "Bearer " + localStorage.getItem("accessToken")
+        },
+      });
+      if (res.data === "Post liked") {
+        setLikes((prev) => prev + 1);
+        setIsLiked(true);
+      } else if (res.data === "Post unliked") {
+        setLikes((prev) => Math.max(prev - 1, 0));
+        setIsLiked(false);
+      }
+    }
+    catch (error) {
+      console.error("Error liking post", error);
+    }
+  }
 
   const handleCommentToggle = () => {
     setIsCommenting(!isCommenting);  
@@ -64,7 +82,7 @@ const Posts = ({ post }) => {
 
       <div className="postActionsBottom">
         <div className="postActions">
-          <div className="likeButton" onClick={handleLike}>
+          <div className={`likeButton ${isLiked ? "liked" : ""}`} onClick={handleLike}>
             <LikeIcon className="icon" />
             <span>{likes} Likes</span>
           </div>
