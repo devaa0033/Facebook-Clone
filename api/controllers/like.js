@@ -1,6 +1,6 @@
 import { db } from '../db.js';
 
-export const likePost = async (req, res) => {
+/*export const likePost = async (req, res) => {
   const { userId, postId } = req.body;
 
   try {
@@ -27,4 +27,36 @@ export const likePost = async (req, res) => {
     console.error(err);
     return res.status(500).json({ message: 'Server error' });
   }
-};
+};*/
+
+
+export const likeController = async (req, res) => {
+  const userId = req.user.id; 
+  const postId = req.body.postId;
+
+  console.log("userId:", userId);
+  console.log("postId:", postId);
+
+  const checkLikeQuery = "SELECT * FROM likes WHERE userId = ? AND postId = ?";
+  const insertLikeQuery = "INSERT INTO likes (userId, postId) VALUES (?, ?)";
+  const deleteLikeQuery = "DELETE FROM likes WHERE userId = ? AND postId = ?";
+
+  db.query(checkLikeQuery, [userId, postId], (err, result) => {
+    if (err) return res.status(500).json(err);
+
+    if (result.length > 0) {
+      // Unliked
+      db.query(deleteLikeQuery, [userId, postId], (err, data) => {
+        if (err) return res.status(500).json(err);
+        return res.status(200).json("Post unliked");
+      });
+    } 
+    else {
+      // liked
+      db.query(insertLikeQuery, [userId, postId], (err, data) => {
+        if (err) return res.status(500).json(err);
+        return res.status(200).json("Post liked");
+      });
+    }
+  });
+}
