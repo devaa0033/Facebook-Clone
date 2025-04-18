@@ -5,7 +5,7 @@ const router = express.Router();
 
 router.get("/", getPosts);
 router.post("/addPost",VERIFY_ACCESS_TOKEN, addPost);
-router.get("/profile/post/:id",VERIFY_ACCESS_TOKEN, getUserPost);
+router.get("/profile/:username",VERIFY_ACCESS_TOKEN, getUserPost);
 
 
 
