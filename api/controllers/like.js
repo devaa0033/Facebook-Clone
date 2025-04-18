@@ -32,7 +32,7 @@ import { db } from '../db.js';
 
 export const likeController = async (req, res) => {
   const userId = req.user.id; 
-  const postId = req.body.postId;
+  const postId = req.params.postId;
 
   console.log("userId:", userId);
   console.log("postId:", postId);
