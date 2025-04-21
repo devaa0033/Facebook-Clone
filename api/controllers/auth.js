@@ -40,53 +40,52 @@ export const register = (req, res) => {
 
 
 //Login User and Generate Access and Refresh Token
-export const login = (req, res) => {
-   const q = "SELECT * FROM users WHERE username = ?";
+export const login = async (req, res) => {
+    
+    const q = "SELECT * FROM users WHERE username = ?";
 
-   db.query(q, [req.body.username], (err, data) => {
-       if(err) return res.status(500).json(err);
-       if(data.length === 0) return res.status(404).json("User not found!");
+    try {
+        const [data] = await db.execute(q, [req.body.username]);
 
-       const checkPassword = bcrypt.compareSync(
-        req.body.password,
-        data[0].password
-       );
+        if (data.length === 0) {
+            return res.status(404).json("User not found!");
+        }
 
-       if(!checkPassword)
+        const checkPassword = await bcrypt.compare(req.body.password, data[0].password);
+        if (!checkPassword) {
             return res.status(400).json("Wrong credentials!");
+        }
 
+        const accessToken = generateAccessToken(data[0]);
+        const refreshToken = generateRefreshToken(data[0]);
       
-       const accessToken = generateAccessToken(data[0]);
-       const refreshToken = generateRefreshToken(data[0]);
+        res.cookie('accessToken', accessToken, {
+            httpOnly: true,
+            sameSite: 'None',
 
-       res.cookie('accessToken', accessToken, {
-        httpOnly: true,
-        sameSite: 'None',
-        secure: false
-       });
-       
-       res.cookie('refreshToken', refreshToken, {
-        httpOnly: true,
-        sameSite: 'none',
-        secure: false
-       });
+        });
 
-       /*const {password, ...others} = data[0];
-       res.status(200).json({others, token: accessToken});*/
+        res.cookie('refreshToken', refreshToken, {
+            httpOnly: true,
+            sameSite: 'None',
+        });
 
+        res.status(200).json({
+            user: {
+                id: data[0].id,
+                username: data[0].username,
+                email: data[0].email,
+                profilePic: data[0].profilePic,
+                name: data[0].name
+            },
+            accessToken,
+        });
 
-       res.status(200).json({
-        user: {
-            id: data[0].id,
-            username: data[0].username,
-            email: data[0].email,
-            profilePic: data[0].profilePic,
-            name: data[0].name
-        },
-        accessToken,
-    });
-   });
-}
+    } catch (err) {
+        console.error("Database or server error:", err);
+        res.status(500).json("Internal server error");
+    }
+};
 
 
 
