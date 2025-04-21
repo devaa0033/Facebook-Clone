@@ -11,32 +11,34 @@ cloudinary.config({
 
 
   
-export const getUser = (req, res) => {
+  export const getUser = async (req, res) => {
     const userId = req.params.id;
-    const q = "SELECT name, username, profilePic, coverPic, Bio,  city, website, YEAR(joinDate) AS joinYear FROM users WHERE id = ?";
+    const q = "SELECT name, username, profilePic, coverPic, Bio, city, website, YEAR(joinDate) AS joinYear FROM users WHERE id = ?";
 
-    db.query(q, [userId], (err, data) => {
-        if (err) {
-            console.error("Database error:", err);
-            return res.status(500).json({ message: 'Internal Server Error', error: err });
-        }
+    try {
+        const [data] = await db.query(q, [userId]);
         if (data.length === 0) {
             return res.status(404).json({ message: 'User not found' });
         }
         return res.status(200).json(data[0]);
-    });
-}
+    } catch (err) {
+        console.error("Database error:", err);
+        return res.status(500).json({ message: 'Internal Server Error', error: err.message });
+    }
+};
 
 
-export const getUserPosts = (req, res) => {
-    const userId = req.params.userId;
-    const q = "SELECT * FROM posts WHERE userId = ?";
+export const getUserPosts = async (req, res) => {
+  const userId = req.params.userId;
+  const q = "SELECT * FROM posts WHERE userId = ?";
 
-    db.query(q, [userId], (err, data) => {
-        if(err) return res.status(500).json(err);
-        return res.status(200).json(data);
-    })
-}
+  try {
+      const [data] = await db.query(q, [userId]);
+      return res.status(200).json(data);
+  } catch (err) {
+      return res.status(500).json({ message: 'Failed to retrieve posts', error: err.message });
+  }
+};
 
 
 
@@ -134,5 +136,8 @@ export const updateCoverImage = async (req, res) => {
   }
 }
   
+
+
+
 
 
