@@ -10,6 +10,7 @@ import postRoutes from './routes/posts.js';
 import authRoutes from './routes/auth.js';
 import likeRoutes from './routes/likes.js';
 import commentRoutes from './routes/comments.js';
+import followRoutes from './routes/follow.js';
 
 
 
@@ -41,6 +42,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/posts', postRoutes);
 app.use('/api/likes', likeRoutes);
 app.use('/api/comments', commentRoutes);
+app.use('/api/follow', followRoutes);
 
 const PORT = process.env.PORT || 3000;
 
