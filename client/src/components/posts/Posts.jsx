@@ -4,6 +4,8 @@ import { CommentOutlined as CommentIcon } from "@mui/icons-material";
 import { ShareOutlined as ShareIcon } from "@mui/icons-material";
 import './posts.scss';
 import { makeRequest } from "../../axios";
+import axios from "axios";
+import Comments from "../comments/Comments";
 
 const Posts = ({ post }) => {
   const [isCommenting, setIsCommenting] = useState(false);  
@@ -13,42 +15,42 @@ const Posts = ({ post }) => {
 
   const handleLike = async () => {
     try {
-      const res= await makeRequest.post(`/api/likes/${post.id}/like`, {}, {
+      console.log("Sending like/unlike request for post ID:", post.id);
+      
+      const res = await axios.post(`http://localhost:8800/api/likes/${post.id}/like`, {}, {
         headers: {
           Authorization: "Bearer " + localStorage.getItem("accessToken")
         },
+        timeout: 10000
       });
-      if (res.data === "Post liked") {
-        setLikes((prev) => prev + 1);
+  
+      console.log("Server response:", res.data);
+  
+      if (res.data.message === "Post liked") {
+        setLikes(res.data.likeCount);
         setIsLiked(true);
-      } else if (res.data === "Post unliked") {
-        setLikes((prev) => Math.max(prev - 1, 0));
+        console.log("Post liked. Likes count updated:", res.data.likeCount);
+      } else if (res.data.message === "Post unliked") {
+        setLikes(res.data.likeCount);
         setIsLiked(false);
+        console.log("Post unliked. Likes count updated:", res.data.likeCount);
+      } else {
+        console.log("Unexpected response:", res.data);
+      }
+    } catch (error) {
+      console.error("Error liking/unliking post", error);
+      if (error.response) {
+        console.log("Error response:", error.response.data);
       }
     }
-    catch (error) {
-      console.error("Error liking post", error);
-    }
-  }
+  };
+  
+  
 
   const handleCommentToggle = () => {
     setIsCommenting(!isCommenting);  
   };
 
-  const handleCommentChange = (event) => {
-    setNewComment(event.target.value);  
-  };
-
-  const handleAddComment = () => {
-    if (newComment.trim()) {
-      const newCommentObj = {
-        userName: "You",
-        text: newComment
-      };
-      post.comments.push(newCommentObj);  
-      setNewComment("");  
-    }
-  };
 
   // Render post if it exists, otherwise return null or loading state
   if (!post) return <div>Loading...</div>;
@@ -98,288 +100,13 @@ const Posts = ({ post }) => {
       </div>
 
       {/* Comments Section */}
-      {isCommenting && (
-        <div className="commentsSection">
-          <div className="addComment">
-            <textarea 
-              value={newComment}
-              onChange={handleCommentChange}
-              placeholder="Write a comment..."
-            />
-            <button onClick={handleAddComment}>Add Comment</button>
-          </div>
-          <h4>Comments</h4>
-          {post?.comments?.map((comment, index) => (
-            <div className="comment" key={index}>
-              <span className="commentUserName">{comment.userName}:</span>
-              <p>{comment.text}</p>
-            </div>
-          ))}
-        </div>
-      )}
+      {isCommenting && <Comments postId={post.id} />}
     </div>
   );
 };
 
 export default Posts;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/*import { makeRequest } from '../../axios.jsx';
-import Post from '../post/Post';
-import './posts.scss';
-import { useQuery } from '@tanstack/react-query';
-
-const Posts = () => {
-  // Use react-query to fetch posts data without authentication
-  const { isLoading, error, data } = useQuery({
-    queryKey: ['repoData'],
-    queryFn: async () => {
-      console.log("Sending request to fetch posts");
-
-      try {
-        const response = await makeRequest.get("/api/posts");  // No token required
-
-        // Log the response data
-        console.log("Response data:", response.data);
-        return response.data;
-
-      } catch (err) {
-        console.error("Error during request:", err);  // Log any errors during the request
-        throw err;  // Re-throw to handle in the `onError` of the query
-      }
-    },
-    onSuccess: (data) => {
-      console.log('Data received successfully:', data); // Log success response data
-    },
-    onError: (error) => {
-      console.error('Error fetching posts:', error); // Log error from query
-    },
-  });
-
-  // Log states for loading, error, and data
-  console.log('isLoading:', isLoading);  // Log the loading state
-  console.log('error:', error);  // Log the error state
-  console.log('data:', data);  // Log the fetched data
-
-  return (
-    <div className="posts">
-      {error ? (
-        <div>Something went wrong! {console.log("Rendering error message.")}</div>
-      ) : isLoading ? (
-        <div>Loading... {console.log("Rendering loading message.")}</div>
-      ) : (
-        data?.map((post) => (
-          <Post post={post} key={post.id} />
-        ))
-      )}
-    </div>
-  );
-};
-
-export default Posts;*/
-
-
-
-
-
-
-
-// import { makeRequest } from '../../axios'
-// import Post from '../post/Post'
-// import "./posts.scss"
-// import {useQuery} from '@tanstack/react-query'
-// import { useContext } from 'react'
-// import { AuthContext } from '../../context/authContext'
-
-
-
-
-// const Posts = () => {
-//     // const { isLoading, error, data } = useQuery(['repoData'], () => {
-//     //   return makeRequest.get("/posts").then(res => res.data)
-//     // })
-
-
-      
-// const {currentUser} = useContext(AuthContext); 
-// console.log(currentUser);
-
-//       const { isLoading, error, data } = useQuery({
-//         queryKey: ['repoData'],
-//         // queryFn: () => makeRequest.get("/posts").then(res => res.data),
-//         queryFn: () => makeRequest.get("/api/posts").then(res => res.data),
-//         onSuccess: (data) => {
-//           console.log('Data received:', data);
-//       },
-//       onError: (error) => {
-//           console.error('Error fetching posts:', error);
-//       }
-//     });
-//     console.log('isLoading:', isLoading);
-//     console.log('error:', error);
-//     console.log('data:', data);
-    
-  
-//     return (
-//         <>
-//       <div className="posts">
-//         {error
-//           ? "Something went wrong!"
-//           : isLoading
-//           ? "Loading..."
-//           : data?.map((post) => (
-//               <Post post={post} key={post.id} />
-//             ))}
-//       </div>
-
-//       {/* //conditional logic 
-//         <div className="posts">
-//         {(() => {
-//             if (error) {
-//             return "Something went wrong!";
-//             } else if (isLoading) {
-//             return "Loading...";
-//             } else if (data) {
-//             return data.map((post) => (
-//                 <Post post={post} key={post.id} />
-//             ));
-//             }
-//             return null; // Fallback if none of the conditions are met
-//         })()}
-//         </div> */}
-
-//         </>
-//     )
-//   }
-
-// export default Posts
 
 
 
