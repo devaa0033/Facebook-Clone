@@ -144,6 +144,7 @@ function Profile() {
             alt=""
           />
         </div>
+        <button className='follow-btn'>Follow</button>
       </div>
 
       <div className="profile-info">
@@ -181,6 +182,8 @@ function Profile() {
         <button className="edit-profile-btn" onClick={() => setIsEditOpen(true)}>
           Edit Profile
         </button>
+
+        
 
         {isEditOpen && (
           <div className="modal-overlay" onClick={() => setIsEditOpen(false)}>
