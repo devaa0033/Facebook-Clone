@@ -113,6 +113,25 @@
   z-index: 2;
 }
 
+.follow-btn {
+  position: absolute;
+  top: 340px; // or adjust based on desired alignment
+  right: 20px;
+  background-color: #f0981d;
+  color: white;
+  padding: 10px 20px;
+  font-size: 14px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  z-index: 2;
+}
+
+.follow-btn:hover {
+  background-color: #c1221a;
+}
+
+
 /* Profile Info */
 .profile-info {
   margin-top: 80px;
@@ -190,6 +209,8 @@
 .edit-profile-btn:hover {
   background-color: #3578b5;
 }
+
+
 
 /* Modal */
 .modal-overlay {
