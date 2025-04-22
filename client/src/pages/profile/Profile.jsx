@@ -61,6 +61,8 @@ function Profile() {
     return <div>Loading...</div>;
   }
 
+
+
   const handleCoverImageChange = (e) => {
     setSelectedCoverImage(e.target.files[0]);
   };
@@ -144,7 +146,7 @@ function Profile() {
             alt=""
           />
         </div>
-        <button className='follow-btn'>Follow</button>
+
       </div>
 
       <div className="profile-info">
