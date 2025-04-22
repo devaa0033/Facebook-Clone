@@ -16,6 +16,8 @@ function Profile() {
   const [isCoverModalOpen, setIsCoverModalOpen] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
   const [activeTab, setActiveTab] = useState('post');
+  const [counts, setCounts] = useState({ followers: 0, following: 0 });
+
 
   useEffect(() => {
     const fetchProfileData = async () => {
@@ -42,6 +44,18 @@ function Profile() {
           }
         });
         setPosts(postResponse.data);
+
+
+        // Fetch follower and following counts
+        const countResponse = await axios.get(`http://localhost:8800/api/follow/follow-counts/${currentUser.id}`, {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+          }
+        });
+        setCounts({
+          followers: countResponse.data.followers,
+          following: countResponse.data.following
+        });
 
 
       } catch (error) {
@@ -169,10 +183,10 @@ function Profile() {
 
         <div className="followers-info">
           <p>
-            <span className="bold-text">256</span> Following
+            <span className="bold-text">{counts.following}</span> Following
           </p>
           <p>
-            <span className="bold-text">165</span> Followers
+            <span className="bold-text">{counts.followers}</span> Followers
           </p>
         </div>
 
@@ -233,4 +247,4 @@ function Profile() {
   );
 }
 
-export default Profile
+export default Profile;
