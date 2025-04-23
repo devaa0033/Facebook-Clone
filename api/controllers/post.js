@@ -32,42 +32,45 @@ export const getPosts = async (req, res) => {
 };
 
 //  Add post
-export const addPost = (req, res) => {
-  upload(req, res, async (err) => {
-    if (err) return res.status(500).json(err);
+export const addPost = async (req, res) => {
+  try {
+    const { desc, userId } = req.body;
 
-    try {
-      const { desc, userId } = req.body;
-
-      if (req.user.id !== parseInt(userId)) {
-        return res.status(403).json("You can only create a post with your own account.");
-      }
-
-      if (!req.file) {
-        return res.status(400).json("No file uploaded.");
-      }
-
-      const result = await cloudinary.uploader.upload(req.file.path);
-      fs.unlink(req.file.path, (err) => {
-        if (err) console.error('Error deleting local file:', err);
-      });
-
-      const img = result.secure_url;
-      const q = "INSERT INTO posts(`desc`, `img`, `userid`, `createdAt`) VALUES (?)";
-      const values = [
-        desc,
-        img,
-        userId,
-        moment(Date.now()).format("YYYY-MM-DD HH:mm:ss"),
-      ];
-
-      await db.query(q, [values]);
-      return res.status(200).json("Post has been created.");
-    } catch (err) {
-      console.error("Error creating post:", err);
-      return res.status(500).json(err);
+    // Check if the logged-in user matches the userId provided
+    if (req.user.id !== parseInt(userId)) {
+      return res.status(403).json("You can only create a post with your own account.");
     }
-  });
+
+    // Check if the file is provided
+    if (!req.file) {
+      return res.status(400).json("No file uploaded.");
+    }
+
+    // Upload to Cloudinary
+    const result = await cloudinary.uploader.upload(req.file.path);
+
+    // Delete local file after uploading to Cloudinary
+    fs.unlink(req.file.path, (err) => {
+      if (err) console.error('Error deleting local file:', err);
+    });
+
+    const img = result.secure_url;
+
+    // Insert post into the database
+    const q = "INSERT INTO posts(`desc`, `img`, `userid`, `createdAt`) VALUES (?)";
+    const values = [
+      desc,
+      img,
+      userId,
+      moment(Date.now()).format("YYYY-MM-DD HH:mm:ss"),
+    ];
+
+    await db.query(q, [values]);
+    return res.status(200).json("Post has been created.");
+  } catch (err) {
+    console.error("Error creating post:", err);
+    return res.status(500).json(err);
+  }
 };
 
 //  Get posts by username

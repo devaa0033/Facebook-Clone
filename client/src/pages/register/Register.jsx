@@ -15,17 +15,27 @@ const Register = () => {
     const navigate = useNavigate(); 
 
 const handleChange = (e) => {
-    setInputs((prev) => ({...prev, [e.target.name]: e.target.value}));
+    setInputs((prev) => {
+        const updated = {...prev, [e.target.name]: e.target.value};
+        console.log("Updated Inputs:", updated);
+        return updated;
+    });
 }
 
 
 const handleClick = async (e) => {
     e.preventDefault();
     try {
+        console.log("Registering with:", inputs);
        await axios.post("/api/auth/register", inputs);
-       navigate("/");
+       console.log("Registration successful!");
+       setTimeout(() => {
+        navigate("/");
+      }, 1000); 
     } catch (err) {
-        setErr(err.response.data);
+        const errorMsg = err.response?.data || "Registration failed";
+        console.error("Registration error:", errorMsg);
+        setErr(errorMsg);
     }
 };
 

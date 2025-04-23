@@ -2,38 +2,42 @@ import {db} from '../db.js';
 import bcrypt from 'bcryptjs';
 import {generateAccessToken, generateRefreshToken} from '../middleware/jwtAuth.js';
 
-export const register = (req, res) => {
-                                   
-    //CHECK USER IF EXISTS
+export const register = async (req, res) => {
+    try {
+        // Check if user already exists
+        const [existingUser] = await db.execute(
+            "SELECT * FROM users WHERE username = ?",
+            [req.body.username]
+        );
 
-    const q = "SELECT * FROM users WHERE username = ?"; 
-    
-    db.query(q, [req.body.username], (err, data) => {
-        if(err) return res.status(500).json(err);
-        if(data.length) return res.status(409).json("User already exists!");
+        if (existingUser.length > 0) {
+            return res.status(409).json("User already exists!");
+        }
 
-    //CREATE A NEW USER
-    //HASH the PASSWORD
+        // Hash the password
+        const salt = bcrypt.genSaltSync(10);
+        const hash = bcrypt.hashSync(req.body.password, salt);
 
-    const salt = bcrypt.genSaltSync(10);
-    const hash = bcrypt.hashSync(req.body.password, salt);
+        // Insert new user
+        const values = [
+            req.body.username,
+            req.body.email,
+            hash,
+            req.body.name,
+            new Date()
+        ];
 
-    const q = "INSERT INTO users(`username`, `email`, `password`, `name`) VALUES (?)" ;
+        await db.execute(
+            "INSERT INTO users(`username`, `email`, `password`, `name`, `joinDate`) VALUES (?, ?, ?, ?, ?)",
+            values
+        );
 
-    const values = [
-        req.body.username,
-        req.body.email,
-        hash,
-        req.body.name
-    ];
-
-    db.query(q, [values], (err, data) => {
-        if(err) return res.status(500).json(err);
         return res.status(200).json("User has been created.");
-    });
-
-  });
-}
+    } catch (err) {
+        console.error("Register error:", err);
+        return res.status(500).json("Something went wrong");
+    }
+};
 
 
 
